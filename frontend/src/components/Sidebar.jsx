@@ -164,7 +164,7 @@ const Sidebar = () => {
     },
     {
       icon: Wrench,
-      label: 'Maintenance Manag.',
+      label: 'Maintenance Manag',
       hasSubmenu: true,
       key: 'MaintenanceManagement',
       children: [
@@ -218,7 +218,7 @@ const Sidebar = () => {
 
   return (
     <div className={`bg-slate-800 transition-all duration-300 ${
-      sidebarCollapsed ? 'w-16' : 'w-64'
+      sidebarCollapsed ? 'w-16' : 'w-72'
     } flex flex-col fixed left-0 top-0 h-full z-30`}>
       {/* Sidebar Header with New Logo */}
       <div className="p-4 border-b border-slate-700">

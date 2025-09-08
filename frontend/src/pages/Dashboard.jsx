@@ -22,7 +22,7 @@ import { formatCurrency, formatNumber } from '../lib/utils';
 const StatCard = ({ title, value, icon: Icon, bgColor, textColor, subtitle, trend }) => (
   <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
     <CardContent className="p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between break-all">
         <div>
           <p className="text-sm font-medium text-slate-600 mb-1">{title}</p>
           <p className="text-3xl font-bold text-slate-900">{value}</p>
@@ -35,7 +35,7 @@ const StatCard = ({ title, value, icon: Icon, bgColor, textColor, subtitle, tren
             </div>
           )}
         </div>
-        <div className={`p-4 rounded-xl ${bgColor}`}>
+        <div className={`p-4 rounded-xl  ${bgColor}`}>
           <Icon className={`h-8 w-8 ${textColor}`} />
         </div>
       </div>

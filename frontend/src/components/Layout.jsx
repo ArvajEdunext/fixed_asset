@@ -16,7 +16,7 @@ const Layout = ({ children }) => {
       
       {/* Main Content Area */}
       <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${
-        sidebarCollapsed ? 'ml-16' : 'ml-64'
+        sidebarCollapsed ? 'ml-16' : 'ml-72'
       }`}>
         {/* Header */}
         <Header />
