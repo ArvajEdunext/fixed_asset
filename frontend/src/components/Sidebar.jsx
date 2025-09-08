@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Input } from './ui/input';
@@ -41,6 +41,7 @@ const SidebarItem = ({
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
           onClick();
         }
       }}
@@ -80,6 +81,7 @@ const SubMenuItem = ({ label, isActive, onClick, path }) => (
     tabIndex={0}
     onKeyDown={(e) => {
       if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
         onClick(path);
       }
     }}
@@ -99,6 +101,25 @@ const Sidebar = () => {
     expandedMenus 
   } = useSelector((state) => state.navigation);
 
+  // Auto-expand menu when a child route is active
+  useEffect(() => {
+    const checkAndExpandParentMenu = () => {
+      menuItems.forEach(item => {
+        if (item.children) {
+          const isChildActive = item.children.some(child => 
+            location.pathname === child.path
+          );
+          
+          if (isChildActive && !expandedMenus[item.key]) {
+            dispatch(toggleExpandedMenu(item.key));
+          }
+        }
+      });
+    };
+    
+    checkAndExpandParentMenu();
+  }, [location.pathname, dispatch, expandedMenus]);
+
   const handleMenuClick = (menuItem, hasSubmenu = false, path = null) => {
     if (hasSubmenu) {
       dispatch(toggleExpandedMenu(menuItem));
@@ -113,7 +134,12 @@ const Sidebar = () => {
 
   const handleSubMenuClick = (path) => {
     navigate(path);
-    dispatch(setActiveMenuItem(path));
+    // Set active menu item based on path
+    const activeItem = menuItems.find(item => 
+      item.children && item.children.some(child => child.path === path)
+    ) || { key: path };
+    
+    dispatch(setActiveMenuItem(activeItem.key));
     dispatch(setCurrentPage(path));
   };
 
@@ -194,15 +220,16 @@ const Sidebar = () => {
     <div className={`bg-slate-800 transition-all duration-300 ${
       sidebarCollapsed ? 'w-16' : 'w-64'
     } flex flex-col fixed left-0 top-0 h-full z-30`}>
-      {/* Sidebar Header */}
-      <div className="p-6 border-b border-slate-700">
+      {/* Sidebar Header with New Logo */}
+      <div className="p-4 border-b border-slate-700">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-blue-600 rounded-lg">
-            <Package className="h-6 w-6 text-white" />
+          <div className="flex items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 h-10 w-10">
+            <div className="text-white font-bold text-lg">AT</div>
           </div>
           {!sidebarCollapsed && (
-            <div>
+            <div className="flex flex-col">
               <h1 className="text-lg font-bold text-white">AssetsTrack</h1>
+              <p className="text-xs text-slate-400">Asset Management System</p>
             </div>
           )}
         </div>
@@ -223,12 +250,12 @@ const Sidebar = () => {
       )}
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-2 space-y-1" role="navigation">
+      <nav className="flex-1 px-4 py-2 space-y-1 overflow-y-auto" role="navigation" aria-label="Main navigation">
         {menuItems.map((item) => (
           <SidebarItem
             key={item.key}
             icon={item.icon}
-            label={item.label}
+            label={sidebarCollapsed ? '' : item.label}
             isActive={isActiveMenuItem(item)}
             hasSubmenu={item.hasSubmenu}
             isExpanded={expandedMenus[item.key]}
