@@ -41,7 +41,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white border-b border-slate-200 px-6 py-4" role="banner">
+    <header className="bg-white px-6 py-3.5" role="banner">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Button
